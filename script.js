@@ -1,15 +1,24 @@
 //You can edit ALL of the code here
 
-let allEpisodes;
 
-function setup() {
-  allEpisodes = getAllEpisodes();
+fetchEpisodes();
 
-  displayAllEpisodes(allEpisodes);
+function fetchEpisodes() {
+  fetch("https://api.tvmaze.com/shows/527/episodes")
+    .then((response) => response.json())
+    .then((data) => {
+      displayAllEpisodes(data);
+      createDropDownMenu(data);
+      setup(data);
+    });
+}
+
+//take array parameter, call searsh input and filter array to display episode
+function setup(array) {
   let searchInput = document.getElementById("search-field");
   searchInput.addEventListener("input", (event) => {
     let value = event.target.value.toLowerCase();
-    let foundLists = allEpisodes.filter((show) => {
+    let foundLists = array.filter((show) => {
       let toLowerCaseName = show.name.toLowerCase();
       let toLowerCaseSummary = show.summary.toLowerCase();
 
@@ -18,15 +27,14 @@ function setup() {
       );
     });
 
+    displayAllEpisodes(foundLists);
+
     document.getElementById(
       "results"
-    ).innerHTML = `Displaying ${foundLists.length} / ${allEpisodes.length}`;
-    displayAllEpisodes(foundLists)
+    ).innerHTML = `Displaying ${foundLists.length} / ${array.length}`;
+
 
   });
-
-  //drop down
-  createDropDownMenu();
 
 }
 
@@ -82,7 +90,6 @@ function displayAllEpisodes(array){
 
 //dropdown menu
 function createDropDownMenu(allEpisodes) {
-  allEpisodes = getAllEpisodes();
   const selectTag = document.getElementById("selectMenu");
   allEpisodes.forEach((episode) => {
     let option = document.createElement("option");
