@@ -2,16 +2,12 @@
 
 let allEpisodes;
 
-// let matchedList = document.getElementById("matchedList");
-// setup function will load the page with all episodes
-
 function setup() {
   allEpisodes = getAllEpisodes();
 
   displayAllEpisodes(allEpisodes);
   let searchInput = document.getElementById("search-field");
   searchInput.addEventListener("input", (event) => {
-    //allEpisodes = getAllEpisodes();
     let value = event.target.value.toLowerCase();
     let foundLists = allEpisodes.filter((show) => {
       let toLowerCaseName = show.name.toLowerCase();
@@ -28,15 +24,19 @@ function setup() {
     displayAllEpisodes(foundLists)
 
   });
+
+  //drop down
+  createDropDownMenu();
+
 }
 
 //create all element and append at to root
-function display(show) {
+function display(show){
   //create elements
   let divContainer = document.createElement("div");
   let divRow = document.createElement("div");
   let divCol_md_4 = document.createElement("div");
-  let divEp = document.createElement("div");
+  let divEp= document.createElement("div");
   let divHead = document.createElement("div");
   let HeadP = document.createElement("p");
   let divContent = document.createElement("div");
@@ -52,30 +52,48 @@ function display(show) {
   //content of element
 
   HeadP.innerHTML = `${show.name} - S${String(show.season).padStart(
-    2,
-    "0"
+  2,
+  "0"
   )}E${String(show.number).padStart(2, "0")} `;
 
   ContentImg.src = `${show.image.medium}`;
   ContentP.innerHTML = `${show.summary}`;
 
   //appent element
-  document.getElementById("root").appendChild(divContainer);
-  divContainer.appendChild(divRow);
-  divRow.appendChild(divCol_md_4);
-  divCol_md_4.appendChild(divEp);
-  divEp.appendChild(divHead);
-  divHead.appendChild(HeadP);
-  divEp.appendChild(divContent);
-  divContent.appendChild(ContentImg);
-  divContent.appendChild(ContentP);
+    document.getElementById("root").appendChild(divContainer);
+    divContainer.appendChild(divRow);
+    divRow.appendChild(divCol_md_4);
+    divCol_md_4.appendChild(divEp);
+    divEp.appendChild(divHead);
+    divHead.appendChild(HeadP);
+    divEp.appendChild(divContent);
+    divContent.appendChild(ContentImg);
+    divContent.appendChild(ContentP);
 }
 
+
 //display all ep
-function displayAllEpisodes(array) {
-  document.getElementById("root").innerHTML = "";
+function displayAllEpisodes(array){
+    document.getElementById("root").innerHTML = "";
   array.forEach((show) => {
     display(show);
+  });
+}
+
+//dropdown menu
+function createDropDownMenu(allEpisodes) {
+  allEpisodes = getAllEpisodes();
+  const selectTag = document.getElementById("selectMenu");
+  allEpisodes.forEach((episode) => {
+    let option = document.createElement("option");
+    option.innerHTML = `S${episode.season}E${String(episode.number).padStart(
+      2,
+      "0"
+    )} - ${episode.name}`;
+    selectTag.appendChild(option);
+    selectTag.addEventListener("change", () => {
+      window.location.href = option.value = `${episode.url}`;
+    });
   });
 }
 
